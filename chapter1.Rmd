@@ -1,8 +1,9 @@
 
 # About the project
 
-"This is the start! I am excited to learn some **serious** R coding skills!"
+This is the start!
+I am excited to learn some **serious** R coding skills!
 
-##Link to my GitHub repository:
+## Link to my GitHub repository:
+
 https://github.com/ilseek/IODS-project
-
