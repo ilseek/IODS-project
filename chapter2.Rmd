@@ -1,6 +1,6 @@
 # Excercise 2
 
-*Describtion of my work this week*
+*Description of my work this week*
 
 read.csv("learning2014.csv")
 ```{r}
