@@ -393,7 +393,10 @@ summary {
 </ul></li>
 <li><a href="#analysis-of-the-data">Analysis of the data</a></li>
 <li><a href="#graphical-overview-of-the-data">Graphical overview of the data</a></li>
-<li><a href="#correcting-the-names-of-the-columns">Correcting the names of the columns</a></li>
+<li><a href="#summary-of-the-data">Summary of the data</a></li>
+<li><a href="#regression-model">Regression model</a></li>
+<li><a href="#summary-of-the-multiple-regression-model">Summary of the multiple regression model</a></li>
+<li><a href="#diagnostic-plots">Diagnostic plots</a></li>
 </ul>
 </div>
 
@@ -437,20 +440,28 @@ summary {
 <div id="graphical-overview-of-the-data" class="section level1">
 <h1>Graphical overview of the data</h1>
 <p>pairs(learning2014[-1], col = learning2014$gender)</p>
-</div>
-<div id="correcting-the-names-of-the-columns" class="section level1">
-<h1>Correcting the names of the columns</h1>
-<p>colnames(learning2014)[7] &lt;- “points” colnames(learning2014)[2] &lt;- “age” colnames(learning2014)[3] &lt;- “attitude”</p>
-<p>pairs(learning2014[-1], col = learning2014$gender) library(GGally) p &lt;- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap(“facethist”, bins = 20))) p</p>
+<p>Correcting the names of the columns: colnames(learning2014)[7] &lt;- “points” colnames(learning2014)[2] &lt;- “age” colnames(learning2014)[3] &lt;- “attitude”</p>
+<p>pairs(learning2014[-1], col = learning2014$gender)</p>
+<p>library(GGally)</p>
+<p>p &lt;- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap(“facethist”, bins = 20))) p</p>
 <p>library(ggplot2)</p>
 <p>p1 &lt;- ggplot(learning2014, aes(x = attitude, y = points, col = gender)) p2 &lt;- p1 + geom_point() p2 p3 &lt;- p2 + geom_smooth(method = “lm”) p3</p>
-<p>#Summary of the data</p>
+</div>
+<div id="summary-of-the-data" class="section level1">
+<h1>Summary of the data</h1>
 <p>summary(learning2014)</p>
-<p>#Regression model</p>
+</div>
+<div id="regression-model" class="section level1">
+<h1>Regression model</h1>
 <p>ggpairs(learning2014, lower = list(combo = wrap(“facethist”, bins = 20))) my_model2 &lt;- lm(points ~ attitude + stra + surf, data = learning2014)</p>
-<p>#Summary of the multiple regression model summary(my_model2)</p>
-<p>#Because the “stra” and “surf” do not have statistically significant relationship with points, they are removed from the analysis. my_model1 &lt;- lm(points ~ attitude, data = learning2014) summary(my_model1)</p>
-<p>#Diagnostic plots</p>
+</div>
+<div id="summary-of-the-multiple-regression-model" class="section level1">
+<h1>Summary of the multiple regression model</h1>
+<p>summary(my_model2)</p>
+<p><strong>Because the “stra” and “surf” do not have statistically significant relationship with points, they are removed from the analysi:</strong> my_model1 &lt;- lm(points ~ attitude, data = learning2014) summary(my_model1)</p>
+</div>
+<div id="diagnostic-plots" class="section level1">
+<h1>Diagnostic plots</h1>
 <p>par(mfrow = c(2,2)) plot(my_model1, which = c(1,2,5))</p>
 <hr />
 </div>
