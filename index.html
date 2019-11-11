@@ -389,8 +389,11 @@ summary {
 <ul>
 <li><a href="#about-the-project">About the project</a><ul>
 <li><a href="#link-to-my-github-repository">Link to my GitHub repository:</a></li>
+<li><a href="#excercise-2">Excercise <strong>2</strong></a></li>
 </ul></li>
-<li><a href="#insert-chapter-2-title-here">Insert chapter 2 title here</a></li>
+<li><a href="#analysis-of-the-data">Analysis of the data</a></li>
+<li><a href="#graphical-overview-of-the-data">Graphical overview of the data</a></li>
+<li><a href="#correcting-the-names-of-the-columns">Correcting the names of the columns</a></li>
 </ul>
 </div>
 
@@ -403,15 +406,52 @@ summary {
 <p><a href="https://github.com/ilseek/IODS-project" class="uri">https://github.com/ilseek/IODS-project</a></p>
 <hr />
 </div>
+<div id="excercise-2" class="section level2">
+<h2>Excercise <strong>2</strong></h2>
+<p><em>Description of my work this week:</em></p>
+<p>In the second exercise we practise data wrangling and regression analysis.</p>
+<p>In the data wrangling part we first read the text file into a data.frame:</p>
+<p>lrn14 &lt;- read.table(“<a href="http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt" class="uri">http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt</a>”, sep=&quot;, header=TRUE)</p>
+<p>dim(lrn14) str(lrn14) The commands dim() and str()are good to figure out how your data looks like. <strong>Dim()</strong> gives you the number of rows and columns in your data. In this case 183 rows or cases and 60 columns or variables. <strong>Str()</strong> returns the structure of data more in detail.Besides the number of observations and variables,it tells name of the vectors and data type.</p>
+<p><em>The data needs to be cleaned:</em></p>
+<p>deep_questions &lt;- c(“D03”, “D11”, “D19”, “D27”, “D07”, “D14”, “D22”, “D30”,“D06”, “D15”, “D23”, “D31”) surface_questions &lt;- c(“SU02”,“SU10”,“SU18”,“SU26”, “SU05”,“SU13”,“SU21”,“SU29”,“SU08”,“SU16”,“SU24”,“SU32”) strategic_questions &lt;- c(“ST01”,“ST09”,“ST17”,“ST25”,“ST04”,“ST12”,“ST20”,“ST28”) attitude_questions &lt;- c(“Da”, “Db”, “Dc”, “Dd”, “De”, “Df”, “Dg”, “Dh”, “Di”,“Dj”)</p>
+<p>After installing dplyr package it is called: library(dplyr)</p>
+<p>Now <strong>select()</strong> can be used: deep_columns &lt;- select(lrn14, one_of(deep_questions)) surface_columns &lt;- select(lrn14, one_of(surface_questions)) strategic_columns &lt;- select(lrn14, one_of(strategic_questions))</p>
+<p>To scale down the combination variables you can take the mean: lrn14<span class="math inline">\(deep &lt;- rowMeans(deep_columns) lrn14\)</span>surf &lt;- rowMeans(surface_columns) lrn14$stra &lt;- rowMeans(strategic_columns)</p>
+<p>keep_columns &lt;- c(“gender”,“Age”,“Attitude”, “deep”, “stra”, “surf”, “Points”)</p>
+<p>learning2014 &lt;- select(lrn14, one_of(keep_columns))</p>
+<p>Scale down the Attitude: learning2014<span class="math inline">\(Attitude &lt;- c(learning2014\)</span>Attitude) / 10 learning2014$Attitude</p>
+<p>With <strong>filter()</strong> you can exclude observations with 0 points: learning2014 &lt;- filter(learning2014, Points &gt; 0)</p>
+<p>I checked that the dimensions of the data are as told: dim(learning2014)</p>
+<p>The created data file is set as a working directory: setwd(“~/IODS-project”)</p>
+<p>And saved as a csv file: write.csv(learning2014,file = “learning2014.csv”)</p>
+<p>To read the file you can use command: read.csv(“learning2014.csv”)</p>
 </div>
-<div id="insert-chapter-2-title-here" class="section level1">
-<h1>Insert chapter 2 title here</h1>
-<p><em>Describe the work you have done this week and summarize your learning.</em></p>
-<ul>
-<li>Describe your work and results clearly.</li>
-<li>Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.</li>
-<li>Assume the reader has no previous knowledge of your data or the more advanced methods you are using.</li>
-</ul>
+</div>
+<div id="analysis-of-the-data" class="section level1">
+<h1>Analysis of the data</h1>
+<p>read.csv(“learning2014.csv”)</p>
+<p>dim(learning2014) str(learning2014)</p>
+<p>This dataset has 166 observations with seven variables. The different variables are: gender which is factor with two levels. Attitude,deep, stra and surf are numeric variables.</p>
+</div>
+<div id="graphical-overview-of-the-data" class="section level1">
+<h1>Graphical overview of the data</h1>
+<p>pairs(learning2014[-1], col = learning2014$gender)</p>
+</div>
+<div id="correcting-the-names-of-the-columns" class="section level1">
+<h1>Correcting the names of the columns</h1>
+<p>colnames(learning2014)[7] &lt;- “points” colnames(learning2014)[2] &lt;- “age” colnames(learning2014)[3] &lt;- “attitude”</p>
+<p>pairs(learning2014[-1], col = learning2014$gender) library(GGally) p &lt;- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap(“facethist”, bins = 20))) p</p>
+<p>library(ggplot2)</p>
+<p>p1 &lt;- ggplot(learning2014, aes(x = attitude, y = points, col = gender)) p2 &lt;- p1 + geom_point() p2 p3 &lt;- p2 + geom_smooth(method = “lm”) p3</p>
+<p>#Summary of the data</p>
+<p>summary(learning2014)</p>
+<p>#Regression model</p>
+<p>ggpairs(learning2014, lower = list(combo = wrap(“facethist”, bins = 20))) my_model2 &lt;- lm(points ~ attitude + stra + surf, data = learning2014)</p>
+<p>#Summary of the multiple regression model summary(my_model2)</p>
+<p>#Because the “stra” and “surf” do not have statistically significant relationship with points, they are removed from the analysis. my_model1 &lt;- lm(points ~ attitude, data = learning2014) summary(my_model1)</p>
+<p>#Diagnostic plots</p>
+<p>par(mfrow = c(2,2)) plot(my_model1, which = c(1,2,5))</p>
 <hr />
 </div>
 
