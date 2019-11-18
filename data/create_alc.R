@@ -111,3 +111,6 @@ cbind(OR, CI)
 #To predict the probability of high alcohol usage:
 probabilities <- predict(m, type = "response")
 alc <- mutate(alc, probability = probabilities)
+alc <- mutate(alc, prediction = probability > 0.5)
+select(alc, failures, absences, sex, high_use, probability, prediction) %>% tail(10)
+table(high_use = alc$high_use, prediction = alc$prediction)
