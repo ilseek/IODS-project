@@ -35,13 +35,13 @@ colnames(alc)
 
 **The purpose of my analysis is to study the relationship between alcohol consumption and following four variables:**
 
-**1.sex: I hypothese that male students have higher consumption of alcohol.**
+**1.sex: I hypothesize that male students have higher consumption of alcohol.**
 
-**2.age: I hypothese that the older the student is the more they consume alcohol.**
+**2.age: I hypothesize that the older the student is the more they consume alcohol.**
 
-**3.goout: I hypothese that the more the student goes out with friends the bigger their alcohol consumption is.**
+**3.goout: I hypothesize that the more the student goes out with friends the bigger their alcohol consumption is.**
 
-**4.health: I hypothese that the current health status is worse in the students with higher alcohol consumption.**
+**4.health: I hypothesize that the current health status is worse in the students with higher alcohol consumption.**
 
 **Exploring the first hypothesis:**
 
@@ -54,6 +54,8 @@ g1 <- ggplot(alc, aes(x = sex, y = alc_use))
 g1 + geom_boxplot() + ylab("Alcohol usage")
 ```
 
+**1: It seems male students have higher consumption of alcohol.**
+
 **Exploring the second hypothesis:**
 
 ```{r}
@@ -62,6 +64,7 @@ alc %>% group_by(age, high_use) %>% summarise(count = n())
 g2 <- ggplot(alc, aes(x = high_use, y = age))
 g2 + geom_boxplot() + ylab("Age")
 ```
+**2: It seems older students have higher consumption of alcohol.**
 
 **Exploring the third hypothesis:**
 
@@ -71,6 +74,7 @@ alc %>% group_by(goout, high_use) %>% summarise(count = n())
 g3 <- ggplot(alc, aes(x = high_use, y = goout))
 g3 + geom_boxplot() + ylab("Going out")
 ```
+**3: Going out more frequently seems to correlate to higher alcohol consumption.**
 
 **Exploring the fourth hypothesis:**
 
@@ -80,7 +84,7 @@ alc %>% group_by(health, high_use) %>% summarise(count = n())
 g4 <- ggplot(alc, aes(x = high_use, y = health))
 g4 + geom_boxplot() + ylab("Health")
 ```
-
+**4: Current health status of a student does not seem to reflect the alcohol consumption.**
 
 **Exploring the variables with logistic regression:**
 
