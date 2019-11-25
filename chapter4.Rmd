@@ -78,7 +78,7 @@ train <- boston_sca[ind,]
 test <- boston_sca[-ind,]
 ```
 
-##Linear discriminant analysis:
+## Linear discriminant analysis
 
 The analysis will be done using crime rate as a target variable (crime ~) and others as predictors.
 The analysis results and the dataplot:
@@ -115,7 +115,7 @@ table(correct = correct_classes, predicted = lda.pred$class)
 
 The analysis was able to predict the high crime rate almost perfectly.Biggest difference between correct and predicted crime rate is in low crime rate.
 
-## Clustering:
+## Clustering
 
 First the Boston data is standardized with scaling and then the distances between observations are measured:
 
@@ -128,7 +128,7 @@ summary(dist_eu)
 ```
 
 
-**K-means clustering:**
+**K-means clustering**
 
 
 ```{r}
