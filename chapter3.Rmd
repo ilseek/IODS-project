@@ -5,7 +5,7 @@ date: "18 11 2019"
 output: html_document
 ---
 
-### Exercise 3
+# Exercise 3
 
 
 ## Analysis of the third exercise

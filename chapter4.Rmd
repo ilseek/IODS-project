@@ -1,0 +1,154 @@
+---
+title: "chapter4.Rmd"
+author: "Ilse Ekman"
+date: "21 11 2019"
+output: html_document
+---
+# Exercise 4
+
+**Loading the data for analysis:**
+
+```{r}
+library(MASS)
+data("Boston")
+```
+
+**Exploring the data:**
+
+Functions known from earlier exercises are used to overview the data:
+```{r}
+str(Boston)
+dim(Boston)
+summary(Boston)
+```
+The data has 506 observations and 14 variables. The data is about housing values in Suburbs of Boston.With the summary function we can see more detailed information about the variables.
+
+**Graphical overview can be done with pairs():**
+
+```{r}
+pairs(Boston)
+```
+
+**To view the correlations better, we can check the correlation matrix and make a correlation plot.
+First the data can be cleaned by rounding the numbers as some of the variables have many decimals:**
+
+```{r}
+library(corrplot)
+library(dplyr)
+cor_matrix<-cor(Boston) %>% round (digits = 2)
+cor_matrix
+corrplot(cor_matrix, method="circle", type="upper", cl.pos="b", tl.pos="d", tl.cex = 0.6)
+```
+
+Based on the correlation plot, for example the accessibility to highways is positively correlated to the property value. The correlation plot is better to view fast, what is the relationship between the variables.
+
+"indus", "nox" and "age" correlate negatively to "dis"."indus" has a positive correlation to "nox".
+
+
+**Next the data is standardized by scaling it using scale function which is used for numerical values:**
+
+```{r}
+boston_sca <- scale(Boston)
+summary(boston_sca)
+```
+
+After standardizing, the scales of the variables are closer to each other and can be more easily compared to each other.
+
+**To continue further with the analysis, the data matrix needs to be changed to data frame:**
+
+```{r}
+boston_sca <- as.data.frame(boston_sca)
+```
+
+Now a new categorical variable of the crime rate in Boston is made by dividing the crime rate to quantiles ("low", "med_low", "med_high", "high"):
+
+```{r}
+bins <- quantile(boston_sca$crim)
+crime <- cut(boston_sca$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+boston_sca <- dplyr::select(boston_sca, -crim)
+boston_sca <- data.frame(boston_sca, crime)
+```
+
+**The dataset will divided to training dataset and testing dataset:**
+
+```{r}
+n <- nrow(boston_sca)
+ind <- sample(n,  size = n * 0.8)
+train <- boston_sca[ind,]
+test <- boston_sca[-ind,]
+```
+
+##Linear discriminant analysis:
+
+The analysis will be done using crime rate as a target variable (crime ~) and others as predictors.
+The analysis results and the dataplot:
+
+```{r}
+lda.fit <- lda(crime ~ ., data = train)
+lda.fit
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "turquoise", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+classes <- as.numeric(train$crime)
+plot(lda.fit, dimen = 2, col = classes, pch = classes)
+lda.arrows(lda.fit, myscale = 1)
+```
+
+**The crime variable will be saved to new set "correct_classes" and the variable will be removed from the test set: **
+
+```{r}
+correct_classes <- test$crime
+test <- dplyr::select(test, -crime)
+```
+
+**LDA model will be used for the test data and the results will be compared with the "correct_classes".**
+
+```{r}
+lda.pred <- predict(lda.fit, newdata = test)
+table(correct = correct_classes, predicted = lda.pred$class)
+```
+
+The analysis was able to predict the high crime rate almost perfectly.Biggest difference between correct and predicted crime rate is in low crime rate.
+
+## Clustering:
+
+First the Boston data is standardized with scaling and then the distances between observations are measured:
+
+```{r}
+library(MASS)
+data('Boston')
+boston_sca <- scale(Boston)
+dist_eu <- dist(boston_sca)
+summary(dist_eu)
+```
+
+
+**K-means clustering:**
+
+
+```{r}
+km <-kmeans(boston_sca, centers = 2)
+pairs(boston_sca, col = km$cluster)
+```
+
+```{r}
+km <-kmeans(boston_sca, centers = 3)
+pairs(boston_sca, col = km$cluster)
+```
+
+**In my eye three clusters are better but lets run WCSS on the data and try again:**
+
+```{r}
+library(ggplot2)
+set.seed(123)
+k_max <- 10
+twcss <- sapply(1:k_max, function(k){kmeans(boston_sca, k)$tot.withinss})
+qplot(x = 1:k_max, y = twcss, geom = 'line')
+km <-kmeans(boston_sca, centers = 2)
+pairs(boston_sca, col = km$cluster)
+```

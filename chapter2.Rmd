@@ -1,4 +1,4 @@
-## Excercise **2**
+# Excercise **2**
 
 *Description of my work this week:*
 
@@ -58,7 +58,7 @@ write.csv(learning2014,file = "learning2014.csv")
 To read the file you can use command:
 read.csv("learning2014.csv")
 
-# Analysis of the data
+## Analysis of the data
 
 read.csv("learning2014.csv")
 
@@ -70,7 +70,7 @@ The different variables are: gender which is factor with two levels.
 Attitude,deep, stra and surf are numeric variables.
 
 
-# Graphical overview of the data
+## Graphical overview of the data
 
 pairs(learning2014[-1], col = learning2014$gender)
 
@@ -94,16 +94,16 @@ p2
 p3 <- p2 + geom_smooth(method = "lm")
 p3
 
-# Summary of the data
+## Summary of the data
 
 summary(learning2014)
 
-# Regression model
+## Regression model
 
 ggpairs(learning2014, lower = list(combo = wrap("facethist", bins = 20)))
 my_model2 <- lm(points ~ attitude + stra + surf, data = learning2014)
 
-# Summary of the multiple regression model
+## Summary of the multiple regression model
 summary(my_model2)
 
 **Because the "stra" and "surf" do not have statistically significant relationship with points, they are removed from the analysi:**
@@ -111,7 +111,7 @@ my_model1 <- lm(points ~ attitude, data = learning2014)
 summary(my_model1)
 
 
-# Diagnostic plots
+## Diagnostic plots
 
 par(mfrow = c(2,2))
 plot(my_model1, which = c(1,2,5))
