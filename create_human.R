@@ -1,13 +1,10 @@
 #create_human.R data
+Ilse Ekman 
+The dataset originates from the United Nations Development Programme. The data contains the human development indices and their components estimated by the Human Development Report Office (HDRO). 
+Source of data: http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt
 
-hd <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human_development.csv", stringsAsFactors = F)
-gii <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/gender_inequality.csv", stringsAsFactors = F, na.strings = "..")
 
-str(hd)
-dim(hd)
-summary(hd)
+human <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt")
 
-str(gii)
-dim(gii)
-summary(gii)
-
+str(human)
+dim(human)

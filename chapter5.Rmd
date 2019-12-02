@@ -1,0 +1,105 @@
+---
+title: "chapter5.rmd"
+author: "Ilse Ekman"
+date: "2 12 2019"
+output: html_document
+---
+# Chapter 5
+
+**Overview of the data**
+
+```{r}
+human <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt")
+
+str(human)
+dim(human)
+
+```
+This data has 155 observations of eight different variables.
+The data describes Human Development Index, which consists of three dimentions: Long healty life, Knowledge, A decent standard of living. For further information see:[HDI](http://hdr.undp.org/sites/default/files/hdr2018_technical_notes.pdf)
+
+
+
+**Graphical overview**
+
+
+```{r}
+library(GGally)
+library(corrplot)
+library(dplyr)
+
+plot <- ggpairs(human)
+plot
+
+cor(human) %>% corrplot
+```
+For example the life expectancy at birth correlates negatively to maternal mortality ratio and adolescent birth rate.
+
+
+## PCA analysis
+
+Principal component analysis (PCA) is dimensionality reduction technique for continuous and correlated variables.It calculates variance in the raw data by making principal components.
+PCA is affected by the relative scaling and it assumes the larger variance is more important than smaller variance.
+
+PCA analysis will be done next both in raw data and scaled data:
+
+
+```{r}
+pca_human <- prcomp(human)
+biplot(pca_human)
+```
+```{r}
+human_std <- scale(human)
+pca_human2 <- prcomp(human_std)
+biplot(pca_human2)
+```
+The PCA plots look very different from each other.
+The plots show where the observations are defined by the 1st and 2nd principal components.The arrows and labels visualize the connections.
+
+In the first biplot, it is visual that the scale of GNI affects the whole plot.GNI has high correlations to PC1.In the scaled data the variance of GNI is scaled down and there for we can see better the  rest  of the correlations between the variables.
+
+Small angle between the arrows  or PC axis means high positive correlation between the two. The length of an arrow is proportional to standard deviation.
+After scaling the variables are more propotional to each other. We see that most of the variables have high correlations to PC1. Labo.FM and Parli.F has correlation to PC2.
+
+Lets add percentages of the variances to axis labels:
+
+```{r}
+s <- summary(pca_human2)
+pca_pr <- round(100*s$importance[2,], digits = 1)
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+biplot(pca_human2, cex = c(0.8, 1), xlab = pc_lab[1], ylab = pc_lab[2])
+```
+
+## The Tea dataset
+
+```{r}
+library(FactoMineR)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+data("tea")
+str(tea)
+dim(tea)
+```
+The data has 300 observations of 36 variables.Lets analyze and visualize data with smaller set of data:
+
+```{r}
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+summary(tea_time)
+str(tea_time)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+Now there is six variables related to tea drinking habits.Most of the people in this data enjoys their tea out of the lunch hour without any extra.Usually it is chain store Earl Grey.
+
+**MCA analysis**
+
+MCA is dimentionality reduction method for categorical variables just like the tea data.
+
+```{r}
+mca <- MCA(tea_time, graph = FALSE)
+summary(mca)
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+ 
